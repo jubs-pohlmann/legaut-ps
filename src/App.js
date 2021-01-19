@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import './global.css';
 
 function App() {
+  const [ marker, setMarker ] = useState([]);
+
+  function selectMarker(markerValue){
+    setMarker(markerValue);
+  }
+
   return (
     <div className="textAnalyzer">
       <div>
@@ -30,11 +36,12 @@ function App() {
       </div>
       <div>
         <h3>Marcadores</h3>
+        <p>Marcador selecionado: {marker}</p>
         <div className="markers">
-          <button id="personMarker">Pessoa</button>
-          <button id="actionMarker">Ação</button>
-          <button id="valueMarker">Valor</button>
-          <button id="objectMarker">Objeto</button>
+          <button id="personMarker" value="pessoa" onClick={e => selectMarker(e.target.value)}>Pessoa</button>
+          <button id="actionMarker" value="ação"   onClick={e => selectMarker(e.target.value)}>Ação</button>
+          <button id="valueMarker"  value="valor"  onClick={e => selectMarker(e.target.value)}>Valor</button>
+          <button id="objectMarker" value="objeto" onClick={e => selectMarker(e.target.value)}>Objeto</button>
         </div>
       </div>
     </div>
