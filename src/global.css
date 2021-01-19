@@ -1,0 +1,39 @@
+button {
+    cursor: pointer;
+}
+
+#personMarker{
+    background: yellow;
+}
+#valueMarker{
+    background: greenyellow;
+}
+#actionMarker{
+    background: pink;
+}
+#objectMarker{
+    background: lightblue;
+}
+
+.textAnalyzer{
+    display: flex;
+    margin: 0 5vw;
+}
+
+.textAnalyzer div{
+    width: 50%;
+    margin: 0 2vw;
+}
+
+.markers{
+    display: flex;
+    flex-direction: column;
+}
+
+.markers button{
+    margin: 1vh 0;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+}
+
