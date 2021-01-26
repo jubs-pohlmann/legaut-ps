@@ -2,16 +2,16 @@ button {
     cursor: pointer;
 }
 
-#personMarker{
+.personMarker{
     background: yellow;
 }
-#valueMarker{
+.valueMarker{
     background: greenyellow;
 }
-#actionMarker{
+.actionMarker{
     background: pink;
 }
-#objectMarker{
+.objectMarker{
     background: lightblue;
 }
 
