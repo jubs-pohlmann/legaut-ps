@@ -27,8 +27,7 @@ function App() {
         text: `${word} `,
         marker: '',
         indexStart: charIndex,
-        color: '',
-        markerIndex: 0
+        color: ''
       }
       charIndex += word.length + 1; 
       wordArray[index] = obj;
@@ -68,39 +67,20 @@ function App() {
     for (let index = startIndex; index <= endIndex; index++) {
       markedText += copy[index].text;
       if(markedDocument[index].marker == marker){ //se marcado remover da pilha // tbm remover caso marcado com outra
-
         copy[index].marker = '';
         copy[index].color = '';
         setMarkedDocument(copy);
-      } 
-      else if(markedDocument[index].marker != ''){ //remover da lista do marcador antigo
-        let copyMarker;
-        switch (copy[index].marker) {
-          case 'person':
-            copyMarker = person; copyMarker.splice(copy[index].markerIndex, 1); setPerson(copyMarker);
-            break;
-          case 'action':
-            copyMarker = action; copyMarker.splice(copy[index].markerIndex, 1); setAction(copyMarker);
-            break;
-          case 'value':
-            copyMarker = value; copyMarker.splice(copy[index].markerIndex, 1); setValue(copyMarker);
-            break;
-          case 'object':
-            copyMarker = object; copyMarker.splice(copy[index].markerIndex, 1); setObject(copyMarker);
-            break;
-        }
-      }
-      if(markedDocument[index].marker != marker){
+      } else {
         copy[index].marker = marker;
         switch (marker) {
           case 'person':
-            copy[index].color = 'yellow'; copy[index].markerIndex = person.length - 1 ; break;
+            copy[index].color = 'yellow'; break;
           case 'action':
-            copy[index].color = 'pink'; copy[index].markerIndex = action.length - 1; break;
+            copy[index].color = 'pink'; break;
           case 'value':
-            copy[index].color = 'greenyellow'; copy[index].markerIndex = value.length - 1; break;
+            copy[index].color = 'greenyellow'; break;
           case 'object':
-            copy[index].color = 'lightblue'; copy[index].markerIndex = object.length - 1; break;
+            copy[index].color = 'lightblue'; break;
         }
         setMarkedDocument(copy);
       }
