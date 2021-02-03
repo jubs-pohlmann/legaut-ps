@@ -7,10 +7,10 @@ function App() {
   const [ marker, setMarker ] = useState( { name: '', index: null } );
   const [ markedDocument, setMarkedDocument ] = useState(splitText( documentText ));
   const [ markerType, setMarkerType ] = useState([
-    { name: 'person', color: 'yellow',      content: [] },
-    { name: 'action', color: 'pink',        content: [] },
-    { name: 'value',  color: 'greenyellow', content: [] },
-    { name: 'object', color: 'lightblue',   content: [] }
+    { name: 'person', color: 'yellow',      content: {} },
+    { name: 'action', color: 'pink',        content: {} },
+    { name: 'value',  color: 'greenyellow', content: {} },
+    { name: 'object', color: 'lightblue',   content: {} }
   ]);
   const [ newMarker,    setNewMarker   ] = useState('');
   const [ markerColor,  setMarkerColor ] = useState('');
@@ -19,12 +19,11 @@ function App() {
 
   async function handleSubmit(e){
     e.preventDefault();
-    console.log(e);
     let temp = markerType;
     temp.push({
       name: newMarker,
       color: markerColor,
-      content: []
+      content: {}
     });
     setMarkerType(temp);
   }
@@ -43,7 +42,7 @@ function App() {
         marker: '',
         indexStart: charIndex,
         color: '',
-        markerIndex: 0
+        markerId: 0
       }
       charIndex += word.length + 1; 
       wordArray[index] = obj;
@@ -61,35 +60,59 @@ function App() {
     }
   }
 
-  function addTextToMarkerList( text ){
+  function addTextToMarkerList( text, id ){
     let temp = markerType;
-    temp[marker.index].content.push(text);
+    temp[marker.index].content[id] = text;
     setMarkerType(temp);
   }
 
-  function newTextMarked(selection) {
-    let selectedText = selection.toString();
-    let startIndex = parseInt(selection.baseNode.parentElement.id);
-    let endIndex = startIndex + selectedText.split(' ').length - 1; 
-  
-    let markedText = '';
-    let copy = markedDocument;
-    for (let index = startIndex; index <= endIndex; index++) {
-      markedText += copy[index].text; //formando a frase marcada
+  function removeFromMarkerList(markerId, markerName){
+    let markerTypeCopy = markerType;
+    let documentCopy = markedDocument;
 
-      if(markedDocument[index].marker != marker.name){
-        copy[index].marker = marker.name;
-        copy[index].color = markerType[marker.index].color; 
-        copy[index].markerIndex = markerType[marker.index].content.length - 1 ; 
-        setMarkedDocument(copy);
+    const foundIndex = markerType.findIndex(element => element.name = markerName); //removendo da lista 
+    delete markerTypeCopy[foundIndex].content[markerId];
+
+    markerId = markerId.split('/');
+    for (let index = markerId[0]; index <= markerId[1]; index++) { //descolorindo o documento
+      documentCopy[index].marker = '';
+      documentCopy[index].color = ''; 
+      documentCopy[index].markerId = 0; 
+    }
+
+    setMarkedDocument(documentCopy);
+  }
+
+  function newTextMarked(selection) {
+    let startIndex = parseInt(selection.baseNode.parentElement.id);
+    let endIndex = startIndex + selection.toString().split(' ').length - 1; 
+    let markedText = '';
+    let documentCopy = markedDocument;
+
+    let id = `${startIndex}/${endIndex}`;
+    let previousContentMarkerId = '';
+    for (let index = startIndex; index <= endIndex; index++) {
+      markedText += documentCopy[index].text; //formando a frase marcada
+      
+      if(markedDocument[index].markerId != previousContentMarkerId){ //removendo a marcacao do texto selecionado caso ja houvesse
+        previousContentMarkerId = markedDocument[index].markerId;
+        if(markedDocument[index].marker != '' ) removeFromMarkerList(previousContentMarkerId, markedDocument[index].marker);
+      } 
+
+      if(markedDocument[index].marker != marker.name){ //palavra nao ja estava marcada com aquele marcador
+        documentCopy[index].marker = marker.name;
+        documentCopy[index].color = markerType[marker.index].color; 
+        documentCopy[index].markerId = id; 
       }
     }
-    addTextToMarkerList(markedText);
+    setMarkedDocument(documentCopy);
+    addTextToMarkerList(markedText, id);
+    setMarker( { name: '', index: null } ); //selecao so finaliza quando muda o marcador (??)
   }
 
   return (
     <div className="textAnalyzer">
-      <div>
+      <div className="textAnalyzerColumn">
         <h3>Documento</h3>
         <span id="documentText">
           {markedDocument.map((word, index) =>(
@@ -99,7 +122,7 @@ function App() {
             ))}
         </span>
       </div>
-      <div>
+      <div className="textAnalyzerColumn">
         <h3>Marcadores</h3>
         
         <form onSubmit={handleSubmit}>
@@ -121,9 +144,9 @@ function App() {
               <button style={{background: currentMarker.color}} value={currentMarker.name} onClick={e => selectMarker(index)}>
                 {currentMarker.name}
               </button>
-              {currentMarker.content.map((content, index2) =>
+              {Object.entries(currentMarker.content).map(([key, value]) =>
                 <p>
-                  ({index2}) {content}
+                  -{value}
                 </p>
               )}
             </div>
