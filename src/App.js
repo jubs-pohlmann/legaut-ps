@@ -70,11 +70,13 @@ function App() {
     let markerTypeCopy = markerType;
     let documentCopy = markedDocument;
 
-    const foundIndex = markerType.findIndex(element => element.name = markerName); //removendo da lista 
+    const foundIndex = markerType.findIndex(element => element.name == markerName); //removendo da lista 
     delete markerTypeCopy[foundIndex].content[markerId];
 
     markerId = markerId.split('/');
-    for (let index = markerId[0]; index <= markerId[1]; index++) { //descolorindo o documento
+    console.log(markerId);
+    for (let index = parseInt(markerId[0]); index <= parseInt(markerId[1]); index++) { //descolorindo o documento
+      console.log(index);
       documentCopy[index].marker = '';
       documentCopy[index].color = ''; 
       documentCopy[index].markerId = 0; 
@@ -90,7 +92,7 @@ function App() {
     let documentCopy = markedDocument;
 
     let id = `${startIndex}/${endIndex}`;
-    let previousContentMarkerId = '';
+    let previousContentMarkerId = 0;
     for (let index = startIndex; index <= endIndex; index++) {
       markedText += documentCopy[index].text; //formando a frase marcada
       
@@ -141,16 +143,14 @@ function App() {
         <div className="markers">
           {markerType.map((currentMarker, index) => 
             <div key={index}>
-              <button style={{background: currentMarker.color}} value={currentMarker.name} onClick={e => selectMarker(index)}>
+              <button key={"button"+index} style={{background: currentMarker.color}} value={currentMarker.name} onClick={e => selectMarker(index)}>
                 {currentMarker.name}
               </button>
               {Object.entries(currentMarker.content).map(([key, value]) =>
-                <p>
+                <p key={index + `${key}`}>
                   -{value}
-                </p>
-              )}
-            </div>
-            )}
+                </p>)}
+            </div>)}
         </div>
       </div>
     </div>
