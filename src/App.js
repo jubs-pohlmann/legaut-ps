@@ -18,7 +18,7 @@ function App() {
   document.onmouseup = selectText;
 
   async function handleSubmit(e){
-    e.preventDefault();
+    e.preventDefault(); //impede refresh da tela
     let temp = markerType;
     temp.push({
       name: newMarker,
@@ -26,6 +26,7 @@ function App() {
       content: {}
     });
     setMarkerType(temp);
+    setNewMarker(''); setMarkerColor(''); setMarker({ name: '', index: null });
   }
   
   function selectMarker( markerValue ) {
@@ -55,7 +56,7 @@ function App() {
     if( selectedText.baseNode &&
         selectedText.baseNode.parentElement.className === 'markedDocument' &&
         selectedText.toString().length > 0 &&
-        marker.name != ''){    
+        marker.name !== ''){    
       newTextMarked(selectedText);
     }
   }
@@ -70,13 +71,11 @@ function App() {
     let markerTypeCopy = markerType;
     let documentCopy = markedDocument;
 
-    const foundIndex = markerType.findIndex(element => element.name == markerName); //removendo da lista 
+    const foundIndex = markerType.findIndex(element => element.name === markerName); //removendo da lista 
     delete markerTypeCopy[foundIndex].content[markerId];
 
     markerId = markerId.split('/');
-    console.log(markerId);
     for (let index = parseInt(markerId[0]); index <= parseInt(markerId[1]); index++) { //descolorindo o documento
-      console.log(index);
       documentCopy[index].marker = '';
       documentCopy[index].color = ''; 
       documentCopy[index].markerId = 0; 
@@ -85,9 +84,21 @@ function App() {
     setMarkedDocument(documentCopy);
   }
 
+  function fixSelection(selection){
+    let startSelection = parseInt(selection.baseNode.parentElement.id);
+    let endSelection = parseInt(selection.focusNode.parentElement.id);
+    if(startSelection > endSelection){
+      let temp = startSelection;
+      startSelection = endSelection;
+      endSelection = temp;
+    }
+    return [startSelection, endSelection];
+  }
+
   function newTextMarked(selection) {
-    let startIndex = parseInt(selection.baseNode.parentElement.id);
-    let endIndex = startIndex + selection.toString().split(' ').length - 1; 
+    let start_end = fixSelection(selection); //todo
+    let startIndex = start_end[0];
+    let endIndex = start_end[1]; 
     let markedText = '';
     let documentCopy = markedDocument;
 
@@ -96,12 +107,12 @@ function App() {
     for (let index = startIndex; index <= endIndex; index++) {
       markedText += documentCopy[index].text; //formando a frase marcada
       
-      if(markedDocument[index].markerId != previousContentMarkerId){ //removendo a marcacao do texto selecionado caso ja houvesse
+      if(markedDocument[index].markerId !== previousContentMarkerId){ //removendo a marcacao do texto selecionado caso ja houvesse
         previousContentMarkerId = markedDocument[index].markerId;
-        if(markedDocument[index].marker != '' ) removeFromMarkerList(previousContentMarkerId, markedDocument[index].marker);
+        if(markedDocument[index].marker !== '' ) removeFromMarkerList(previousContentMarkerId, markedDocument[index].marker);
       } 
 
-      if(markedDocument[index].marker != marker.name){ //palavra nao ja estava marcada com aquele marcador
+      if(markedDocument[index].marker !== marker.name){ //palavra nao ja estava marcada com aquele marcador
         documentCopy[index].marker = marker.name;
         documentCopy[index].color = markerType[marker.index].color; 
         documentCopy[index].markerId = id; 
@@ -139,7 +150,6 @@ function App() {
         </form>
 
         <p>MARCADOR SELECIONADO: {marker.name}</p>
-
         <div className="markers">
           {markerType.map((currentMarker, index) => 
             <div key={index}>
