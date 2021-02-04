@@ -1,17 +1,11 @@
-.textAnalyzer{
-    display: flex;
-    margin: 0 5vw;
-    min-width: 500px;
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital@1&family=Quicksand&display=swap');
+
+*{
+    font-family: 'Quicksand', sans-serif;
 }
 
-.textAnalyzerColumn{
-    width: 50%;
-    margin: 0 2vw;
-}
-
-.markers{
-    display: flex;
-    flex-direction: column;
+h3{
+    font-family: 'Lato', sans-serif;
 }
 
 button{
@@ -22,3 +16,34 @@ button{
     border-radius: 5px;
     border: none;
 }
+
+input{
+    margin: 1vh 0;
+    margin-left: 5px;
+}
+
+
+form{
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.textAnalyzer{
+    display: flex;
+    margin: 0 5vw;
+    min-width: 500px;
+}
+
+.textAnalyzerColumn{
+    width: 50%;
+    margin: 0 2vw;
+    text-align: justify;
+}
+
+.markers{
+    display: flex;
+    flex-direction: column;
+}
+
